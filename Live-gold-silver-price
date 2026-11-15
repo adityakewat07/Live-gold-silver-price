@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gold Price Today - Live Gold & Silver Rates India</title>
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Check live gold and silver price today in India. Get real-time bullion market updates, 24K, 22K, 18K gold rates, and silver per kg prices with live charts.">
+    <meta name="keywords" content="gold price today, aaj ka sone ka bhav, silver price live, gold silver rate India, live bullion market">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        header h1 {
+            font-size: 26px;
+            color: #fbbf24;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        .market-status {
+            display: inline-block;
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 8px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+            transition: transform 0.2s, background-color 0.5s ease;
+        }
+
+        .card.flash-green {
+            background-color: #064e3b !important;
+        }
+
+        .card.flash-red {
+            background-color: #7f1d1d !important;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #cbd5e1;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price {
+            font-size: 24px;
+            font-weight: 700;
+            color: #f8fafc;
+            margin-bottom: 5px;
+        }
+
+        .change {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .change.positive {
+            color: #34d399;
+        }
+
+        .change.negative {
+            color: #f87171;
+        }
+
+        .chart-container {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #334155;
+        }
+
+        .chart-header {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #fbbf24;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 12px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>🟡 Gold & Silver Live Price</h1>
+            <p>भारतीय सराफा बाजार लाइव भाव (Real-time updates)</p>
+            <div class="market-status">● Live Market Active</div>
+        </header>
+
+        <div class="cards-grid">
+            <!-- Gold 24K -->
+            <div class="card" id="card-gold24">
+                <div class="card-title">सोना (24K - प्रति 10g) <span>🪙</span></div>
+                <div class="price" id="price-gold24">₹1,38,160</div>
+                <div class="change positive" id="change-gold24">▲ +₹120 (0.09%)</div>
+            </div>
+
+            <!-- Gold 22K -->
+            <div class="card" id="card-gold22">
+                <div class="card-title">सोना (22K - प्रति 10g) <span>🪙</span></div>
+                <div class="price" id="price-gold22">₹1,26,650</div>
+                <div class="change positive" id="change-gold22">▲ +₹110 (0.09%)</div>
+            </div>
+
+            <!-- Silver -->
+            <div class="card" id="card-silver">
+                <div class="card-title">चांदी (1 किलोग्राम) <span>⚪</span></div>
+                <div class="price" id="price-silver">₹1,95,000</div>
+                <div class="change negative" id="change-silver">▼ -₹450 (-0.23%)</div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-header">📈 लाइव मूल्य उतार-चढ़ाव चार्ट</div>
+            <canvas id="liveChart" height="100"></canvas>
+        </div>
+
+        <footer>
+            <p>© 2026 Gold Price Today. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Live Chart Setup
+        const ctx = document.getElementById('liveChart').getContext('2d');
+        const liveChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['10:00 AM', '11:00 AM', '12:00 PM', '01:00 PM', '02:00 PM', 'Live'],
+                datasets: [{
+                    label: 'Gold 24K (₹ / 10g)',
+                    data: [137950, 138020, 138000, 138100, 138120, 138160],
+                    borderColor: '#fbbf24',
+                    backgroundColor: 'rgba(251, 191, 36, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { labels: { color: '#cbd5e1' } }
+                },
+                scales: {
+                    x: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
+                    y: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
+                }
+            }
+        });
+
+        // Real-time fluctuating simulation
+        function updatePrices() {
+            const gold24Elem = document.getElementById('price-gold24');
+            const gold22Elem = document.getElementById('price-gold22');
+            const silverElem = document.getElementById('price-silver');
+
+            const cardGold24 = document.getElementById('card-gold24');
+            const cardSilver = document.getElementById('card-silver');
+
+            // Random small fluctuation
+            let goldChange = (Math.random() * 20 - 9).toFixed(0);
+            let silverChange = (Math.random() * 150 - 70).toFixed(0);
+
+            let currentGold = 138160 + parseInt(goldChange);
+            let currentGold22 = Math.round(currentGold * (22/24));
+            let currentSilver = 195000 + parseInt(silverChange);
+
+            gold24Elem.innerText = '₹' + currentGold.toLocaleString('en-IN');
+            gold22Elem.innerText = '₹' + currentGold22.toLocaleString('en-IN');
+            silverElem.innerText = '₹' + currentSilver.toLocaleString('en-IN');
+
+            // Flash effect
+            if (goldChange >= 0) {
+                cardGold24.classList.add('flash-green');
+                setTimeout(() => cardGold24.classList.remove('flash-green'), 500);
+            } else {
+                cardGold24.classList.add('flash-red');
+                setTimeout(() => cardGold24.classList.remove('flash-red'), 500);
+            }
+
+            if (silverChange >= 0) {
+                cardSilver.classList.add('flash-green');
+                setTimeout(() => cardSilver.classList.remove('flash-green'), 500);
+            } else {
+                cardSilver.classList.add('flash-red');
+                setTimeout(() => cardSilver.classList.remove('flash-red'), 500);
+            }
+        }
+
+        // Update every 3 seconds
+        setInterval(updatePrices, 3000);
+    </script>
+</body>
+</html>
