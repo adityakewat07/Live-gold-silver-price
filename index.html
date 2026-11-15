@@ -1,126 +1,236 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gold Price Today - Live Gold & Silver Rates India</title>
-    <meta name="description" content="Check live gold and silver price today in India. Get real-time bullion market updates, 24K, 22K, 18K gold rates, and silver per kg prices with live charts.">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background-color: #0f172a; color: #f8fafc; padding: 20px; }
-        .container { max-width: 900px; margin: 0 auto; }
-        header { text-align: center; margin-bottom: 25px; }
-        header h1 { font-size: 26px; color: #fbbf24; margin-bottom: 5px; }
-        header p { font-size: 14px; color: #94a3b8; }
-        .market-status { display: inline-block; background: rgba(16, 185, 129, 0.15); color: #34d399; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; margin-top: 8px; }
-        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 15px; margin-bottom: 25px; }
-        .card { background: #1e293b; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); border: 1px solid #334155; transition: background-color 0.5s ease; }
-        .card.flash-green { background-color: #064e3b !important; }
-        .card.flash-red { background-color: #7f1d1d !important; }
-        .card-title { font-size: 16px; font-weight: 600; color: #cbd5e1; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .price { font-size: 24px; font-weight: 700; color: #f8fafc; margin-bottom: 5px; }
-        .change { font-size: 13px; font-weight: 500; }
-        .change.positive { color: #34d399; }
-        .change.negative { color: #f87171; }
-        .chart-container { background: #1e293b; border-radius: 12px; padding: 20px; border: 1px solid #334155; }
-        .chart-header { font-size: 16px; font-weight: 600; margin-bottom: 15px; color: #fbbf24; }
-        footer { text-align: center; margin-top: 30px; font-size: 12px; color: #64748b; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Gold Silver Price</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:Arial,sans-serif;
+ background:#f3f5f9;
+ color:#222;
+}
+header{
+ background:linear-gradient(120deg,#f39c12,#e67e22);
+ color:white;
+ padding:22px 15px;
+ text-align:center;
+}
+header h1{margin:0;font-size:25px}
+header p{margin:8px 0 0}
+.container{padding:15px;max-width:900px;margin:auto}
+select,button{
+ padding:12px;
+ border:0;
+ border-radius:8px;
+ font-size:15px;
+}
+select{width:100%;background:white}
+.cards{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:12px;
+ margin-top:15px;
+}
+.card{
+ background:white;
+ padding:18px 12px;
+ border-radius:12px;
+ box-shadow:0 3px 12px #ddd;
+ text-align:center;
+}
+.card h3{margin:5px;font-size:16px}
+.price{font-size:22px;font-weight:bold;color:#e67e22}
+.small{color:#777;font-size:12px}
+.section{
+ background:white;
+ margin-top:18px;
+ padding:16px;
+ border-radius:12px;
+ box-shadow:0 3px 12px #ddd;
+}
+.section h2{font-size:19px;margin-top:0}
+button{
+ background:#e67e22;
+ color:white;
+ width:100%;
+ margin-top:10px;
+ cursor:pointer;
+}
+input{
+ width:100%;
+ padding:12px;
+ border:1px solid #ddd;
+ border-radius:8px;
+ margin-top:8px;
+}
+footer{
+ text-align:center;
+ padding:20px;
+ color:#777;
+ font-size:13px;
+}
+@media(max-width:450px){
+ .cards{grid-template-columns:1fr 1fr}
+ .price{font-size:19px}
+}
+</style>
 </head>
+
 <body>
-    <div class="container">
-        <header>
-            <h1>🟡 Gold & Silver Live Price</h1>
-            <p>भारतीय सराफा बाजार लाइव भाव (Real-time updates)</p>
-            <div class="market-status">● Live Market Active</div>
-        </header>
-        <div class="cards-grid">
-            <div class="card" id="card-gold24">
-                <div class="card-title">सोना (24K - प्रति 10g) <span>🪙</span></div>
-                <div class="price" id="price-gold24">₹1,38,160</div>
-                <div class="change positive" id="change-gold24">▲ +₹120 (0.09%)</div>
-            </div>
-            <div class="card" id="card-gold22">
-                <div class="card-title">सोना (22K - प्रति 10g) <span>🪙</span></div>
-                <div class="price" id="price-gold22">₹1,26,650</div>
-                <div class="change positive" id="change-gold22">▲ +₹110 (0.09%)</div>
-            </div>
-            <div class="card" id="card-silver">
-                <div class="card-title">चांदी (1 किलोग्राम) <span>⚪</span></div>
-                <div class="price" id="price-silver">₹1,95,000</div>
-                <div class="change negative" id="change-silver">▼ -₹450 (-0.23%)</div>
-            </div>
-        </div>
-        <div class="chart-container">
-            <div class="chart-header">📈 लाइव मूल्य उतार-चढ़ाव चार्ट</div>
-            <canvas id="liveChart" height="100"></canvas>
-        </div>
-        <footer>
-            <p>© 2026 Gold Price Today. All rights reserved.</p>
-        </footer>
-    </div>
-    <script>
-        const ctx = document.getElementById('liveChart').getContext('2d');
-        const liveChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['10:00 AM', '11:00 AM', '12:00 PM', '01:00 PM', '02:00 PM', 'Live'],
-                datasets: [{
-                    label: 'Gold 24K (₹ / 10g)',
-                    data: [137950, 138020, 138000, 138100, 138120, 138160],
-                    borderColor: '#fbbf24',
-                    backgroundColor: 'rgba(251, 191, 36, 0.1)',
-                    borderWidth: 2,
-                    fill: true,
-                    tension: 0.3
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { labels: { color: '#cbd5e1' } } },
-                scales: {
-                    x: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
-                    y: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
-                }
-            }
-        });
-        function updatePrices() {
-            const gold24Elem = document.getElementById('price-gold24');
-            const gold22Elem = document.getElementById('price-gold22');
-            const silverElem = document.getElementById('price-silver');
-            const cardGold24 = document.getElementById('card-gold24');
-            const cardSilver = document.getElementById('card-silver');
 
-            let goldChange = (Math.random() * 20 - 9).toFixed(0);
-            let silverChange = (Math.random() * 150 - 70).toFixed(0);
+<header>
+<h1>🥇 GOLD & SILVER TRACKER</h1>
+<p>सोना और चांदी का भाव</p>
+</header>
 
-            let currentGold = 138160 + parseInt(goldChange);
-            let currentGold22 = Math.round(currentGold * (22/24));
-            let currentSilver = 195000 + parseInt(silverChange);
+<div class="container">
 
-            gold24Elem.innerText = '₹' + currentGold.toLocaleString('en-IN');
-            gold22Elem.innerText = '₹' + currentGold22.toLocaleString('en-IN');
-            silverElem.innerText = '₹' + currentSilver.toLocaleString('en-IN');
+<div class="section">
+<h2>📍 अपना शहर चुनें</h2>
+<select id="city" onchange="updatePrices()">
+<option value="0">भोपाल</option>
+<option value="1">इंदौर</option>
+<option value="2">दिल्ली</option>
+<option value="3">मुंबई</option>
+<option value="4">जयपुर</option>
+<option value="5">लखनऊ</option>
+<option value="6">पटना</option>
+<option value="7">कोलकाता</option>
+<option value="8">चेन्नई</option>
+<option value="9">हैदराबाद</option>
+<option value="10">अहमदाबाद</option>
+<option value="11">बेंगलुरु</option>
+</select>
+</div>
 
-            if (goldChange >= 0) {
-                cardGold24.classList.add('flash-green');
-                setTimeout(() => cardGold24.classList.remove('flash-green'), 500);
-            } else {
-                cardGold24.classList.add('flash-red');
-                setTimeout(() => cardGold24.classList.remove('flash-red'), 500);
-            }
-            if (silverChange >= 0) {
-                cardSilver.classList.add('flash-green');
-                setTimeout(() => cardSilver.classList.add('flash-green'), 500); // fixed
-                setTimeout(() => cardSilver.classList.remove('flash-green'), 500);
-            } else {
-                cardSilver.classList.add('flash-red');
-                setTimeout(() => cardSilver.classList.remove('flash-red'), 500);
-            }
-        }
-        setInterval(updatePrices, 3000);
-    </script>
+<div class="cards">
+
+<div class="card">
+<h3>24 कैरेट सोना</h3>
+<div class="price" id="g24">₹7,500</div>
+<div class="small">प्रति 1 ग्राम (Demo)</div>
+</div>
+
+<div class="card">
+<h3>22 कैरेट सोना</h3>
+<div class="price" id="g22">₹6,875</div>
+<div class="small">प्रति 1 ग्राम (Demo)</div>
+</div>
+
+<div class="card">
+<h3>18 कैरेट सोना</h3>
+<div class="price" id="g18">₹5,625</div>
+<div class="small">प्रति 1 ग्राम (Demo)</div>
+</div>
+
+<div class="card">
+<h3>चांदी</h3>
+<div class="price" id="silver">₹90</div>
+<div class="small">प्रति 1 ग्राम (Demo)</div>
+</div>
+
+</div>
+
+<div class="section">
+<h2>📊 Gold Price Chart</h2>
+<canvas id="goldChart"></canvas>
+</div>
+
+<div class="section">
+<h2>📈 Silver Price Chart</h2>
+<canvas id="silverChart"></canvas>
+</div>
+
+<div class="section">
+<h2>🔔 भाव का अलर्ट</h2>
+<p>अपना मोबाइल नंबर और मनचाहा भाव दर्ज करें।</p>
+<input type="tel" id="mobile" placeholder="मोबाइल नंबर">
+<input type="number" id="target" placeholder="अपना Target Price">
+<button onclick="alertSet()">Alert सेट करें</button>
+</div>
+
+<div class="section">
+<h2>⭐ Premium Membership</h2>
+<p>₹100 / 2 महीने</p>
+<p>Premium में भविष्य में अतिरिक्त सुविधाएँ जोड़ी जा सकती हैं।</p>
+<button onclick="alert('Payment Gateway अभी कनेक्ट नहीं है।')">Subscribe करें</button>
+</div>
+
+</div>
+
+<footer>
+Gold & Silver Price Tracker<br>
+Demo Version | Rates are not live
+</footer>
+
+<script>
+const baseGold=7500;
+const baseSilver=90;
+
+const goldChart=new Chart(
+ document.getElementById('goldChart'),
+ {
+ type:'line',
+ data:{
+ labels:['सोम','मंगल','बुध','गुरु','शुक्र','शनि','रवि'],
+ datasets:[{
+ label:'Gold Price',
+ data:[7300,7350,7280,7400,7450,7380,7500],
+ borderColor:'#e67e22',
+ tension:.3
+ }]
+ }
+ });
+
+const silverChart=new Chart(
+ document.getElementById('silverChart'),
+ {
+ type:'line',
+ data:{
+ labels:['सोम','मंगल','बुध','गुरु','शुक्र','शनि','रवि'],
+ datasets:[{
+ label:'Silver Price',
+ data:[85,87,86,88,89,88,90],
+ borderColor:'#777',
+ tension:.3
+ }]
+ }
+ });
+
+function updatePrices(){
+ const city=document.getElementById('city').value;
+ const difference=city*10;
+
+ document.getElementById('g24').innerText=
+ '₹'+(baseGold+difference).toLocaleString('en-IN');
+
+ document.getElementById('g22').innerText=
+ '₹'+Math.round((baseGold+difference)*.916).toLocaleString('en-IN');
+
+ document.getElementById('g18').innerText=
+ '₹'+Math.round((baseGold+difference)*.75).toLocaleString('en-IN');
+
+ document.getElementById('silver').innerText=
+ '₹'+(baseSilver+city).toLocaleString('en-IN');
+}
+
+function alertSet(){
+ const mobile=document.getElementById('mobile').value;
+ const target=document.getElementById('target').value;
+
+ if(mobile.length!==10 || !target){
+ alert('सही मोबाइल नंबर और Target Price डालें।');
+ return;
+ }
+
+ alert('यह Demo Alert है। SMS सेवा अभी कनेक्ट नहीं है।');
+}
+</script>
+
 </body>
 </html>
