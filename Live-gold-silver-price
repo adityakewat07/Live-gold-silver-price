@@ -3,16 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gold Price Today - Live Gold & Silver Rates India</title>
-    <!-- SEO Meta Tags -->
-    <meta name="description" content="Check live gold and silver price today in India. Get real-time bullion market updates, 24K, 22K, 18K gold rates, and silver per kg prices with live charts.">
-    <meta name="keywords" content="gold price today, aaj ka sone ka bhav, silver price live, gold silver rate India, live bullion market">
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chart.js -->
+    <title>Live Gold & Silver Prices in India (INR) | Real-Time Rates & Subscription</title>
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js for Live & Monthly Graphs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <style>
         * {
             margin: 0;
@@ -20,175 +15,298 @@
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
         }
-
         body {
-            background-color: #0f172a;
-            color: #f8fafc;
+            background-color: #f4f7f6;
+            color: #333;
             padding: 20px;
         }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
         header {
             text-align: center;
             margin-bottom: 25px;
         }
-
         header h1 {
-            font-size: 26px;
-            color: #fbbf24;
+            font-size: 24px;
+            color: #111;
             margin-bottom: 5px;
         }
-
         header p {
-            font-size: 14px;
-            color: #94a3b8;
+            font-size: 13px;
+            color: #666;
         }
-
-        .market-status {
-            display: inline-block;
-            background: rgba(16, 185, 129, 0.15);
-            color: #34d399;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-            margin-top: 8px;
-        }
-
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .card {
-            background: #1e293b;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-            border: 1px solid #334155;
-            transition: transform 0.2s, background-color 0.5s ease;
-        }
-
-        .card.flash-green {
-            background-color: #064e3b !important;
-        }
-
-        .card.flash-red {
-            background-color: #7f1d1d !important;
-        }
-
-        .card-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #cbd5e1;
-            margin-bottom: 10px;
+        /* Controls & Filters */
+        .controls-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
-
-        .price {
-            font-size: 24px;
-            font-weight: 700;
-            color: #f8fafc;
-            margin-bottom: 5px;
+        .filter-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
         }
-
-        .change {
-            font-size: 13px;
+        .filter-btn {
+            padding: 6px 12px;
+            border: none;
+            background: #eee;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 12px;
             font-weight: 500;
+            transition: 0.3s;
         }
-
-        .change.positive {
-            color: #34d399;
+        .filter-btn.active, .filter-btn:hover {
+            background: #007bff;
+            color: #fff;
         }
-
-        .change.negative {
-            color: #f87171;
+        .city-select {
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 12px;
+            outline: none;
         }
-
-        .chart-container {
-            background: #1e293b;
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid #334155;
+        /* Price Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 25px;
         }
-
-        .chart-header {
+        .card {
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .card h3 {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 8px;
+        }
+        .card .price {
             font-size: 16px;
             font-weight: 600;
-            margin-bottom: 15px;
-            color: #fbbf24;
+            color: #222;
+        }
+        .card .change {
+            font-size: 11px;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+        .flash-green { animation: flashG 1s; }
+        .flash-red { animation: flashR 1s; }
+        @keyframes flashG { 0% { background: #d4edda; } 100% { background: #fff; } }
+        @keyframes flashR { 0% { background: #f8d7da; } 100% { background: #fff; } }
+
+        /* Chart Section */
+        .chart-container {
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .chart-header h2 {
+            font-size: 15px;
+        }
+        .time-tabs button {
+            background: none;
+            border: 1px solid #ccc;
+            padding: 3px 8px;
+            font-size: 11px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .time-tabs button.active {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
         }
 
+        /* Subscription Box */
+        .sub-box {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .sub-box h2 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        .sub-box p {
+            font-size: 12px;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+        .sub-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 350px;
+            margin: 0 auto;
+        }
+        .sub-form input {
+            padding: 10px;
+            border-radius: 6px;
+            border: none;
+            font-size: 13px;
+            outline: none;
+        }
+        .sub-form button {
+            padding: 10px;
+            background: #ffc107;
+            color: #000;
+            border: none;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+        .sub-form button:hover {
+            background: #e0a800;
+        }
         footer {
             text-align: center;
-            margin-top: 30px;
-            font-size: 12px;
-            color: #64748b;
+            margin-top: 25px;
+            font-size: 11px;
+            color: #888;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <h1>🟡 Gold & Silver Live Price</h1>
-            <p>भारतीय सराफा बाजार लाइव भाव (Real-time updates)</p>
-            <div class="market-status">● Live Market Active</div>
-        </header>
+    <header>
+        <h1>Live Gold & Silver Tracker (INR)</h1>
+        <p>Real-time Bullion Rates & Monthly Price Trends</p>
+    </header>
 
-        <div class="cards-grid">
-            <!-- Gold 24K -->
-            <div class="card" id="card-gold24">
-                <div class="card-title">सोना (24K - प्रति 10g) <span>🪙</span></div>
-                <div class="price" id="price-gold24">₹1,38,160</div>
-                <div class="change positive" id="change-gold24">▲ +₹120 (0.09%)</div>
-            </div>
-
-            <!-- Gold 22K -->
-            <div class="card" id="card-gold22">
-                <div class="card-title">सोना (22K - प्रति 10g) <span>🪙</span></div>
-                <div class="price" id="price-gold22">₹1,26,650</div>
-                <div class="change positive" id="change-gold22">▲ +₹110 (0.09%)</div>
-            </div>
-
-            <!-- Silver -->
-            <div class="card" id="card-silver">
-                <div class="card-title">चांदी (1 किलोग्राम) <span>⚪</span></div>
-                <div class="price" id="price-silver">₹1,95,000</div>
-                <div class="change negative" id="change-silver">▼ -₹450 (-0.23%)</div>
-            </div>
+    <!-- Controls & Filters -->
+    <div class="controls-container">
+        <div class="filter-buttons">
+            <button class="filter-btn active" onclick="filterMetal('all')">All</button>
+            <button class="filter-btn" onclick="filterMetal('gold')">Gold (10g)</button>
+            <button class="filter-btn" onclick="filterMetal('silver')">Silver (1kg)</button>
+            <button class="filter-btn" onclick="filterMetal('platinum')">Platinum</button>
+            <button class="filter-btn" onclick="filterMetal('palladium')">Palladium</button>
         </div>
-
-        <div class="chart-container">
-            <div class="chart-header">📈 लाइव मूल्य उतार-चढ़ाव चार्ट</div>
-            <canvas id="liveChart" height="100"></canvas>
+        <div>
+            <select class="city-select" id="cityDropdown" onchange="updateCityRates()">
+                <option value="delhi">Delhi (Base)</option>
+                <option value="mumbai">Mumbai (+₹200)</option>
+                <option value="jaipur">Jaipur (+₹150)</option>
+                <option value="indore">Indore (+₹100)</option>
+                <option value="patna">Patna (+₹250)</option>
+            </select>
         </div>
-
-        <footer>
-            <p>© 2026 Gold Price Today. All rights reserved.</p>
-        </footer>
     </div>
 
+    <!-- Live Price Cards -->
+    <div class="cards-grid" id="cardsGrid">
+        <div class="card" data-metal="gold">
+            <h3>Gold (24K)</h3>
+            <div class="price" id="gold24Price">₹76,450</div>
+            <div class="change" style="color: green;">+₹120 (0.16%)</div>
+        </div>
+        <div class="card" data-metal="gold">
+            <h3>Gold (22K)</h3>
+            <div class="price" id="gold22Price">₹70,050</div>
+            <div class="change" style="color: green;">+₹110 (0.16%)</div>
+        </div>
+        <div class="card" data-metal="silver">
+            <h3>Silver (1Kg)</h3>
+            <div class="price" id="silverPrice">₹89,200</div>
+            <div class="change" style="color: red;">-₹300 (-0.34%)</div>
+        </div>
+        <div class="card" data-metal="platinum">
+            <h3>Platinum</h3>
+            <div class="price" id="platPrice">₹38,400</div>
+            <div class="change" style="color: green;">+₹80 (0.21%)</div>
+        </div>
+        <div class="card" data-metal="palladium">
+            <h3>Palladium</h3>
+            <div class="price" id="pallPrice">₹94,100</div>
+            <div class="change" style="color: green;">+₹450 (0.48%)</div>
+        </div>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="chart-container">
+        <div class="chart-header">
+            <h2 id="chartTitle">Live Intraday Chart (Gold)</h2>
+            <div class="time-tabs">
+                <button onclick="changeChart('today')" class="active" id="btnToday">Today</button>
+                <button onclick="changeChart('month')" id="btnMonth">1 Month</button>
+                <button onclick="changeChart('year')" id="btnYear">1 Year</button>
+            </div>
+        </div>
+        <canvas id="metalChart" height="110"></canvas>
+    </div>
+
+    <!-- Subscription & Price Alert Box -->
+    <div class="sub-box">
+        <h2>🔔 Price Alert & VIP Subscription</h2>
+        <p>Get instant price drop / hike notifications on your mobile! <b>Special Offer: ₹100 for 2 Months.</b></p>
+        <div class="sub-form">
+            <input type="tel" id="userPhone" placeholder="Enter Mobile Number (WhatsApp/SMS)" />
+            <button onclick="alert('Subscription feature is linking to Payment Gateway. Coming live soon!')">Subscribe @ ₹100 / 2 Months</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Live Gold & Silver Tracker. All rights reserved.</p>
+    </footer>
+
     <script>
-        // Live Chart Setup
-        const ctx = document.getElementById('liveChart').getContext('2d');
-        const liveChart = new Chart(ctx, {
+        // Chart.js Configuration
+        const ctx = document.getElementById('metalChart').getContext('2d');
+        
+        // Data sets for Today, 1 Month, and 1 Year
+        const chartDataSets = {
+            today: {
+                labels: ['10 AM', '11 AM', '12 PM', '1 PM', '2 PM', '3 PM', '4 PM'],
+                data: [76300, 76350, 76400, 76380, 76420, 76400, 76450],
+                label: 'Today Intraday (Gold ₹)'
+            },
+            month: {
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                data: [75200, 75800, 76100, 76450],
+                label: 'Last 1 Month Trend (Gold ₹)'
+            },
+            year: {
+                labels: ['Jan', 'Mar', 'May', 'Jul', 'Sep', 'Nov'],
+                data: [68000, 70500, 72000, 74000, 75500, 76450],
+                label: 'Last 1 Year Trend (Gold ₹)'
+            }
+        };
+
+        let metalChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['10:00 AM', '11:00 AM', '12:00 PM', '01:00 PM', '02:00 PM', 'Live'],
+                labels: chartDataSets.today.labels,
                 datasets: [{
-                    label: 'Gold 24K (₹ / 10g)',
-                    data: [137950, 138020, 138000, 138100, 138120, 138160],
-                    borderColor: '#fbbf24',
-                    backgroundColor: 'rgba(251, 191, 36, 0.1)',
+                    label: chartDataSets.today.label,
+                    data: chartDataSets.today.data,
+                    borderColor: '#28a745',
+                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
                     borderWidth: 2,
                     fill: true,
                     tension: 0.3
@@ -196,57 +314,56 @@
             },
             options: {
                 responsive: true,
-                plugins: {
-                    legend: { labels: { color: '#cbd5e1' } }
-                },
-                scales: {
-                    x: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
-                    y: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } }
-                }
+                plugins: { legend: { display: false } }
             }
         });
 
-        // Real-time fluctuating simulation
-        function updatePrices() {
-            const gold24Elem = document.getElementById('price-gold24');
-            const gold22Elem = document.getElementById('price-gold22');
-            const silverElem = document.getElementById('price-silver');
-
-            const cardGold24 = document.getElementById('card-gold24');
-            const cardSilver = document.getElementById('card-silver');
-
-            // Random small fluctuation
-            let goldChange = (Math.random() * 20 - 9).toFixed(0);
-            let silverChange = (Math.random() * 150 - 70).toFixed(0);
-
-            let currentGold = 138160 + parseInt(goldChange);
-            let currentGold22 = Math.round(currentGold * (22/24));
-            let currentSilver = 195000 + parseInt(silverChange);
-
-            gold24Elem.innerText = '₹' + currentGold.toLocaleString('en-IN');
-            gold22Elem.innerText = '₹' + currentGold22.toLocaleString('en-IN');
-            silverElem.innerText = '₹' + currentSilver.toLocaleString('en-IN');
-
-            // Flash effect
-            if (goldChange >= 0) {
-                cardGold24.classList.add('flash-green');
-                setTimeout(() => cardGold24.classList.remove('flash-green'), 500);
-            } else {
-                cardGold24.classList.add('flash-red');
-                setTimeout(() => cardGold24.classList.remove('flash-red'), 500);
+        function changeChart(period) {
+            document.querySelectorAll('.time-tabs button').forEach(b => b.classList.remove('active'));
+            if(period === 'today') {
+                document.getElementById('btnToday').classList.add('active');
+                metalChart.data.labels = chartDataSets.today.labels;
+                metalChart.data.datasets[0].data = chartDataSets.today.data;
+            } else if(period === 'month') {
+                document.getElementById('btnMonth').classList.add('active');
+                metalChart.data.labels = chartDataSets.month.labels;
+                metalChart.data.datasets[0].data = chartDataSets.month.data;
+            } else if(period === 'year') {
+                document.getElementById('btnYear').classList.add('active');
+                metalChart.data.labels = chartDataSets.year.labels;
+                metalChart.data.datasets[0].data = chartDataSets.year.data;
             }
-
-            if (silverChange >= 0) {
-                cardSilver.classList.add('flash-green');
-                setTimeout(() => cardSilver.classList.remove('flash-green'), 500);
-            } else {
-                cardSilver.classList.add('flash-red');
-                setTimeout(() => cardSilver.classList.remove('flash-red'), 500);
-            }
+            metalChart.update();
         }
 
-        // Update every 3 seconds
-        setInterval(updatePrices, 3000);
+        // Metal Filtering Function
+        function filterMetal(metal) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const cards = document.querySelectorAll('.cards-grid .card');
+            cards.forEach(card => {
+                if(metal === 'all' || card.getAttribute('data-metal') === metal) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // City-wise price adjustment simulator
+        function updateCityRates() {
+            const city = document.getElementById('cityDropdown').value;
+            let addOn = 0;
+            if(city === 'mumbai') addOn = 200;
+            if(city === 'jaipur') addOn = 150;
+            if(city === 'indore') addOn = 100;
+            if(city === 'patna') addOn = 250;
+
+            document.getElementById('gold24Price').innerText = '₹' + (76450 + addOn).toLocaleString();
+            document.getElementById('gold22Price').innerText = '₹' + (70050 + addOn).toLocaleString();
+            document.getElementById('silverPrice').innerText = '₹' + (89200 + (addOn * 2)).toLocaleString();
+        }
     </script>
 </body>
 </html>
