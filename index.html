@@ -210,190 +210,86 @@ footer{
 <footer>
  Gold & Silver Tracker © 2026
 </footer>
-
 <script>
-let goldRate=0;
-let silverRate=0;
-let samples=[];
-let alertDone=false;
-let hindi=true;
+const OUNCE = 31.1035;
 
-const ounce=31.1035;
-
-function money(value){
- return "₹"+value.toLocaleString("en-IN",{
-  minimumFractionDigits:2,
-  maximumFractionDigits:2
- });
+function rupee(n) {
+  return "₹" + n.toLocaleString("en-IN", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
 }
 
-async function getPrice(symbol){
- const response=await fetch(
-  "https://api.gold-api.com/price/"+symbol+"/INR",
-  {cache:"no-store"}
- );
- if(!response.ok) throw new Error("API Error "+response.status);
+async function getLivePrice(symbol) {
+  const url = `https://api.gold-api.com/price/${symbol}/INR`;
 
- const data=await response.json();
- const price=Number(data.price);
-
- if(!Number.isFinite(price)||price<=0){
-  throw new Error("गलत API डेटा");
- }
-
- return price/ounce;
-}
-
-async function updatePrices(){
- const status=document.getElementById("status");
-
- try{
-  const results=await Promise.all([
-   getPrice("XAU"),
-   getPrice("XAG")
-  ]);
-
-  goldRate=results[0];
-  silverRate=results[1];
-
-  document.getElementById("g24").textContent=money(goldRate);
-  document.getElementById("g24ten").textContent=
-   "10 ग्राम: "+money(goldRate*10);
-
-  document.getElementById("g22").textContent=
-   money(goldRate*22/24);
-  document.getElementById("g22ten").textContent=
-   "10 ग्राम: "+money(goldRate*22/24*10);
-
-  document.getElementById("g18").textContent=
-   money(goldRate*18/24);
-  document.getElementById("g18ten").textContent=
-   "10 ग्राम: "+money(goldRate*18/24*10);
-
-  document.getElementById("silver").textContent=
-   money(silverRate);
-  document.getElementById("silverten").textContent=
-   "10 ग्राम: "+money(silverRate*10);
-
-  const now=new Date();
-  status.textContent=
-   "🟢 Live Spot Rate | अपडेट: "+now.toLocaleTimeString("hi-IN");
-
-  samples.push({
-   time:now.toLocaleTimeString("hi-IN"),
-   gold:goldRate,
-   silver:silverRate
+  const response = await fetch(url, {
+    cache: "no-store"
   });
 
-  if(samples.length>50)samples.shift();
+  if (!response.ok) {
+    throw new Error("API Error: " + response.status);
+  }
 
-  drawChart();
-  checkAlert();
+  const data = await response.json();
 
- }catch(error){
-  status.textContent=
-   "🔴 Live Rate नहीं मिल पाया: "+error.message+
-   " | इंटरनेट/API जांचें।";
- }
+  if (data.currency !== "INR" ||
+      !Number.isFinite(Number(data.price))) {
+    throw new Error("Invalid API data");
+  }
+
+  return {
+    gram: Number(data.price) / OUNCE,
+    updatedAt: data.updatedAt
+  };
 }
 
-function drawChart(){
- const canvas=document.getElementById("chart");
- const ctx=canvas.getContext("2d");
- const width=canvas.clientWidth;
- const height=180;
- const ratio=window.devicePixelRatio||1;
+async function updateLiveRates() {
+  const status = document.getElementById("status");
 
- canvas.width=width*ratio;
- canvas.height=height*ratio;
- ctx.scale(ratio,ratio);
- ctx.clearRect(0,0,width,height);
+  try {
+    status.textContent = "LIVE भाव अपडेट हो रहे हैं...";
 
- if(samples.length<2){
-  ctx.fillText("भाव का डेटा इकट्ठा हो रहा है...",10,30);
-  return;
- }
+    const [gold, silver] = await Promise.all([
+      getLivePrice("XAU"),
+      getLivePrice("XAG")
+    ]);
 
- const values=samples.map(x=>x.gold);
- const min=Math.min(...values);
- const max=Math.max(...values);
- const range=max-min||1;
+    const g24 = gold.gram;
+    const g22 = g24 * 22 / 24;
+    const g18 = g24 * 18 / 24;
+    const s = silver.gram;
 
- ctx.beginPath();
+    document.getElementById("g24").textContent = rupee(g24);
+    document.getElementById("g24ten").textContent =
+      "10 ग्राम: " + rupee(g24 * 10);
 
- values.forEach((value,index)=>{
-  const x=10+index*(width-20)/(values.length-1);
-  const y=height-15-((value-min)/range)*(height-35);
+    document.getElementById("g22").textContent = rupee(g22);
+    document.getElementById("g22ten").textContent =
+      "10 ग्राम: " + rupee(g22 * 10);
 
-  if(index===0)ctx.moveTo(x,y);
-  else ctx.lineTo(x,y);
- });
+    document.getElementById("g18").textContent = rupee(g18);
+    document.getElementById("g18ten").textContent =
+      "10 ग्राम: " + rupee(g18 * 10);
 
- ctx.strokeStyle="#e99513";
- ctx.lineWidth=2;
- ctx.stroke();
+    document.getElementById("silver").textContent = rupee(s);
+    document.getElementById("silverten").textContent =
+      "10 ग्राम: " + rupee(s * 10);
+
+    const time = new Date(gold.updatedAt);
+
+    status.textContent =
+      "🟢 LIVE SPOT RATE | API अपडेट: " +
+      time.toLocaleString("en-IN", {
+        timeZone: "Asia/Kolkata"
+      }) + " IST";
+
+  } catch (error) {
+    status.textContent =
+      "🔴 LIVE DATA नहीं मिला: " + error.message;
+  }
 }
 
-function setAlert(){
- const target=Number(document.getElementById("targetPrice").value);
- const metal=document.getElementById("alertMetal").value;
-
- if(!target||target<=0){
-  alert("सही लक्ष्य भाव डालें");
-  return;
- }
-
- localStorage.setItem("priceAlert",JSON.stringify({
-  target:target,
-  metal:metal
- }));
-
- alertDone=false;
- document.getElementById("alertMessage").textContent=
-  "आपका Price Alert इस ब्राउज़र में सेव हो गया है।";
-}
-
-function checkAlert(){
- const saved=localStorage.getItem("priceAlert");
- if(!saved)return;
-
- const alertData=JSON.parse(saved);
- const current=alertData.metal==="gold"?goldRate:silverRate;
-
- if(current<=alertData.target&&!alertDone){
-  alertDone=true;
-  alert("Price Alert! लक्ष्य भाव पर पहुंच गया है।");
- }
-}
-
-function showHome(){
- window.scrollTo({top:0,behavior:"smooth"});
-}
-
-function showAlert(){
- document.getElementById("alertSection").scrollIntoView({
-  behavior:"smooth"
- });
-}
-
-function showPremium(){
- document.getElementById("premiumSection").scrollIntoView({
-  behavior:"smooth"
- });
-}
-
-function changeLanguage(){
- hindi=!hindi;
- document.querySelector("header p").textContent=
- hindi?"भारत में सोना और चांदी का भाव":
- "Gold and Silver Prices in India";
-}
-
-updatePrices();
-setInterval(updatePrices,5*60*1000);
-
-window.addEventListener("resize",drawChart);
+updateLiveRates();
+setInterval(updateLiveRates, 30000);
 </script>
-
-</body>
-</html>
