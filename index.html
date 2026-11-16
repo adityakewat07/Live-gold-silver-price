@@ -1,155 +1,298 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Gold & Silver Prices in India (INR) | Real-Time Rates & Subscription</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background-color: #f4f7f6; color: #333; padding: 20px; }
-        header { text-align: center; margin-bottom: 25px; }
-        header h1 { font-size: 24px; color: #111; margin-bottom: 5px; }
-        header p { font-size: 13px; color: #666; }
-        .controls-container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .filter-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
-        .filter-btn { padding: 6px 12px; border: none; background: #eee; cursor: pointer; border-radius: 6px; font-size: 12px; font-weight: 500; transition: 0.3s; }
-        .filter-btn.active, .filter-btn:hover { background: #007bff; color: #fff; }
-        .city-select { padding: 6px 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 12px; outline: none; }
-        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 25px; }
-        .card { background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-align: center; }
-        .card h3 { font-size: 14px; color: #555; margin-bottom: 8px; }
-        .card .price { font-size: 16px; font-weight: 600; color: #222; }
-        .chart-container { background: #fff; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 25px; }
-        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .chart-header h2 { font-size: 15px; }
-        .time-tabs button { background: none; border: 1px solid #ccc; padding: 3px 8px; font-size: 11px; cursor: pointer; border-radius: 4px; }
-        .time-tabs button.active { background: #28a745; color: white; border-color: #28a745; }
-        .sub-box { background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .sub-box h2 { font-size: 18px; margin-bottom: 8px; }
-        .sub-box p { font-size: 12px; margin-bottom: 15px; opacity: 0.9; }
-        .sub-form { display: flex; flex-direction: column; gap: 10px; max-width: 350px; margin: 0 auto; }
-        .sub-form input { padding: 10px; border-radius: 6px; border: none; font-size: 13px; outline: none; }
-        .sub-form button { padding: 10px; background: #ffc107; color: #000; border: none; font-weight: 600; border-radius: 6px; cursor: pointer; font-size: 13px; }
-        footer { text-align: center; margin-top: 25px; font-size: 11px; color: #888; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Gold Silver Price India</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+ margin:0;
+ font-family:Arial,sans-serif;
+ background:#f3f5f9;
+ color:#222;
+}
+
+header{
+ background:linear-gradient(120deg,#f39c12,#e67e22);
+ color:white;
+ text-align:center;
+ padding:25px 12px;
+}
+
+header h1{
+ margin:0;
+ font-size:25px;
+}
+
+header p{
+ margin-bottom:0;
+}
+
+.container{
+ max-width:900px;
+ margin:auto;
+ padding:15px;
+}
+
+.box{
+ background:white;
+ padding:18px;
+ border-radius:13px;
+ margin-bottom:15px;
+ box-shadow:0 3px 12px #ddd;
+}
+
+select{
+ width:100%;
+ padding:13px;
+ border:1px solid #ddd;
+ border-radius:8px;
+ font-size:16px;
+}
+
+.cards{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:12px;
+}
+
+.card{
+ background:white;
+ padding:18px 10px;
+ border-radius:12px;
+ text-align:center;
+ box-shadow:0 3px 12px #ddd;
+}
+
+.card h3{
+ font-size:16px;
+}
+
+.price{
+ color:#e67e22;
+ font-size:22px;
+ font-weight:bold;
+}
+
+.sub{
+ color:#777;
+ font-size:13px;
+ margin-top:7px;
+}
+
+button{
+ background:#e67e22;
+ color:white;
+ border:0;
+ border-radius:8px;
+ padding:13px;
+ width:100%;
+ font-size:16px;
+ cursor:pointer;
+}
+
+.status{
+ text-align:center;
+ font-size:14px;
+ color:#555;
+}
+
+.green{color:green}
+.red{color:red}
+
+footer{
+ text-align:center;
+ padding:20px;
+ color:#777;
+ font-size:13px;
+}
+
+@media(max-width:400px){
+ .price{font-size:19px}
+}
+</style>
 </head>
+
 <body>
 
-    <header>
-        <h1>Live Gold & Silver Tracker (INR)</h1>
-        <p>Real-time Bullion Rates & Monthly Price Trends</p>
-    </header>
+<header>
+<h1>🥇 GOLD & SILVER TRACKER</h1>
+<p>भारत में सोने और चांदी का भाव</p>
+</header>
 
-    <div class="controls-container">
-        <div class="filter-buttons">
-            <button class="filter-btn active" onclick="filterMetal('all')">All</button>
-            <button class="filter-btn" onclick="filterMetal('gold')">Gold (10g)</button>
-            <button class="filter-btn" onclick="filterMetal('silver')">Silver (1kg)</button>
-            <button class="filter-btn" onclick="filterMetal('platinum')">Platinum</button>
-            <button class="filter-btn" onclick="filterMetal('palladium')">Palladium</button>
-        </div>
-        <div>
-            <select class="city-select" id="cityDropdown" onchange="updateCityRates()">
-                <option value="delhi">Delhi (Base)</option>
-                <option value="mumbai">Mumbai (+₹200)</option>
-                <option value="jaipur">Jaipur (+₹150)</option>
-                <option value="indore">Indore (+₹100)</option>
-                <option value="patna">Patna (+₹250)</option>
-            </select>
-        </div>
-    </div>
+<div class="container">
 
-    <div class="cards-grid" id="cardsGrid">
-        <div class="card" data-metal="gold">
-            <h3>Gold (24K)</h3>
-            <div class="price" id="gold24Price">₹76,450</div>
-        </div>
-        <div class="card" data-metal="gold">
-            <h3>Gold (22K)</h3>
-            <div class="price" id="gold22Price">₹70,050</div>
-        </div>
-        <div class="card" data-metal="silver">
-            <h3>Silver (1Kg)</h3>
-            <div class="price" id="silverPrice">₹89,200</div>
-        </div>
-        <div class="card" data-metal="platinum">
-            <h3>Platinum</h3>
-            <div class="price" id="platPrice">₹38,400</div>
-        </div>
-        <div class="card" data-metal="palladium">
-            <h3>Palladium</h3>
-            <div class="price" id="pallPrice">₹94,100</div>
-        </div>
-    </div>
+<div class="box">
+<h3>📍 अपना शहर चुनें</h3>
 
-    <div class="chart-container">
-        <div class="chart-header">
-            <h2 id="chartTitle">Live Intraday Chart (Gold)</h2>
-            <div class="time-tabs">
-                <button onclick="changeChart('today')" class="active" id="btnToday">Today</button>
-                <button onclick="changeChart('month')" id="btnMonth">1 Month</button>
-                <button onclick="changeChart('year')" id="btnYear">1 Year</button>
-            </div>
-        </div>
-        <canvas id="metalChart" height="110"></canvas>
-    </div>
+<select id="city">
+<option>भोपाल</option>
+<option>इंदौर</option>
+<option>दिल्ली</option>
+<option>मुंबई</option>
+<option>जयपुर</option>
+<option>लखनऊ</option>
+<option>पटना</option>
+<option>कोलकाता</option>
+<option>चेन्नई</option>
+<option>हैदराबाद</option>
+<option>अहमदाबाद</option>
+<option>बेंगलुरु</option>
+</select>
 
-    <div class="sub-box">
-        <h2>🔔 Price Alert & VIP Subscription</h2>
-        <p>Get instant price drop / hike notifications! <b>Special Offer: ₹100 for 2 Months.</b></p>
-        <div class="sub-form">
-            <input type="tel" id="userPhone" placeholder="Enter Mobile Number" />
-            <button onclick="alert('Subscription feature is linking to Payment Gateway. Coming live soon!')">Subscribe @ ₹100 / 2 Months</button>
-        </div>
-    </div>
+<p class="sub">
+नोट: शहर चुनने से Spot Rate नहीं बदलता।
+स्थानीय बाजार का भाव अलग हो सकता है।
+</p>
+</div>
 
-    <footer>
-        <p>&copy; 2026 Live Gold & Silver Tracker. All rights reserved.</p>
-    </footer>
+<div class="box status" id="status">
+भाव लोड हो रहे हैं...
+</div>
 
-    <script>
-        const ctx = document.getElementById('metalChart').getContext('2d');
-        const chartDataSets = {
-            today: { labels: ['10 AM', '11 AM', '12 PM', '1 PM', '2 PM', '3 PM', '4 PM'], data: [76300, 76350, 76400, 76380, 76420, 76400, 76450] },
-            month: { labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'], data: [75200, 75800, 76100, 76450] },
-            year: { labels: ['Jan', 'Mar', 'May', 'Jul', 'Sep', 'Nov'], data: [68000, 70500, 72000, 74000, 75500, 76450] }
-        };
+<div class="cards">
 
-        let metalChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: chartDataSets.today.labels,
-                datasets: [{ data: chartDataSets.today.data, borderColor: '#28a745', backgroundColor: 'rgba(40, 167, 69, 0.1)', borderWidth: 2, fill: true, tension: 0.3 }]
-            },
-            options: { responsive: true, plugins: { legend: { display: false } } }
-        });
+<div class="card">
+<h3>🥇 Gold 24K</h3>
+<div class="price" id="g24">लोड हो रहा है</div>
+<div class="sub">प्रति ग्राम</div>
+<div class="sub" id="g24ten"></div>
+</div>
 
-        function changeChart(period) {
-            document.querySelectorAll('.time-tabs button').forEach(b => b.classList.remove('active'));
-            if(period === 'today') { document.getElementById('btnToday').classList.add('active'); metalChart.data.labels = chartDataSets.today.labels; metalChart.data.datasets[0].data = chartDataSets.today.data; }
-            else if(period === 'month') { document.getElementById('btnMonth').classList.add('active'); metalChart.data.labels = chartDataSets.month.labels; metalChart.data.datasets[0].data = chartDataSets.month.data; }
-            else if(period === 'year') { document.getElementById('btnYear').classList.add('active'); metalChart.data.labels = chartDataSets.year.labels; metalChart.data.datasets[0].data = chartDataSets.year.data; }
-            metalChart.update();
-        }
+<div class="card">
+<h3>🥇 Gold 22K</h3>
+<div class="price" id="g22">लोड हो रहा है</div>
+<div class="sub">प्रति ग्राम</div>
+<div class="sub" id="g22ten"></div>
+</div>
 
-        function filterMetal(metal) {
-            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            document.querySelectorAll('.cards-grid .card').forEach(card => {
-                if(metal === 'all' || card.getAttribute('data-metal') === metal) card.style.display = 'block';
-                else card.style.display = 'none';
-            });
-        }
+<div class="card">
+<h3>🥇 Gold 18K</h3>
+<div class="price" id="g18">लोड हो रहा है</div>
+<div class="sub">प्रति ग्राम</div>
+<div class="sub" id="g18ten"></div>
+</div>
 
-        function updateCityRates() {
-            const city = document.getElementById('cityDropdown').value;
-            let addOn = city === 'mumbai' ? 200 : city === 'jaipur' ? 150 : city === 'indore' ? 100 : city === 'patna' ? 250 : 0;
-            document.getElementById('gold24Price').innerText = '₹' + (76450 + addOn).toLocaleString();
-            document.getElementById('gold22Price').innerText = '₹' + (70050 + addOn).toLocaleString();
-            document.getElementById('silverPrice').innerText = '₹' + (89200 + (addOn * 2)).toLocaleString();
-        }
-    </script>
+<div class="card">
+<h3>🥈 Silver</h3>
+<div class="price" id="silver">लोड हो रहा है</div>
+<div class="sub">प्रति ग्राम</div>
+<div class="sub" id="silverte n"></div>
+</div>
+
+</div>
+
+<div class="box">
+<h3>🔄 Live Price Update</h3>
+<p class="status" id="updated">अभी अपडेट नहीं हुआ</p>
+<button onclick="updatePrices()">अभी भाव अपडेट करें</button>
+</div>
+
+<div class="box">
+<h3>📊 जरूरी जानकारी</h3>
+<p>Gold 24K = शुद्ध सोना</p>
+<p>Gold 22K = 91.67% शुद्धता</p>
+<p>Gold 18K = 75% शुद्धता</p>
+<p>Silver = चांदी का Spot Rate</p>
+</div>
+
+</div>
+
+<footer>
+Gold & Silver Tracker India<br>
+International Spot Price | Indicative Rates
+</footer>
+
+<script>
+
+const API = "https://api.gold-api.com/price/";
+
+function showPrice(id,value){
+ document.getElementById(id).innerText =
+ "₹" + value.toLocaleString("en-IN",{
+ minimumFractionDigits:2,
+ maximumFractionDigits:2
+ });
+}
+
+async function getMetal(symbol){
+
+ const response = await fetch(
+ API + symbol + "/INR",
+ {cache:"no-store"}
+ );
+
+ if(!response.ok){
+  throw new Error(symbol + " API Error");
+ }
+
+ const data = await response.json();
+
+ if(typeof data.price !== "number" || data.price <= 0){
+  throw new Error("Invalid price data");
+ }
+
+ return data;
+}
+
+async function updatePrices(){
+
+ const status = document.getElementById("status");
+
+ status.innerText = "भाव अपडेट हो रहे हैं...";
+ status.className = "box status";
+
+ try{
+
+  const [gold,silver] = await Promise.all([
+   getMetal("XAU"),
+   getMetal("XAG")
+  ]);
+
+  // API price INR per troy ounce
+  const goldGram = gold.price / 31.1034768;
+  const silverGram = silver.price / 31.1034768;
+
+  const gold22 = goldGram * 0.9167;
+  const gold18 = goldGram * 0.75;
+
+  showPrice("g24",goldGram);
+  showPrice("g22",gold22);
+  showPrice("g18",gold18);
+  showPrice("silver",silverGram);
+
+  showPrice("g24ten",goldGram * 10);
+  showPrice("g22ten",gold22 * 10);
+  showPrice("g18ten",gold18 * 10);
+  showPrice("silverte n",silverGram * 10);
+
+  status.innerText = "✅ Live Spot Rates सफलतापूर्वक अपडेट हुए";
+  status.className = "box status green";
+
+  const time = new Date().toLocaleString("hi-IN");
+
+  document.getElementById("updated").innerText =
+   "वेबसाइट अपडेट समय: " + time;
+
+ }catch(error){
+
+  status.innerText =
+   "❌ Live Rate अभी उपलब्ध नहीं है। कृपया दोबारा कोशिश करें।";
+
+  status.className = "box status red";
+
+  console.log(error);
+ }
+}
+
+updatePrices();
+
+setInterval(updatePrices,5*60*1000);
+
+</script>
+
 </body>
 </html>
